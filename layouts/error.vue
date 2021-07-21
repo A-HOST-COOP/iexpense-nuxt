@@ -12,29 +12,29 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  layout: 'empty',
-  props: {
-    error: {
-      type: Object,
-      default: null
+<script lang="ts">
+import { defineComponent, reactive, toRefs } from '@vue/composition-api'
+
+export default defineComponent({
+    layout: 'empty',
+    props: {
+      error: {
+        type: Object,
+        require: false,
+        default: () => ({ statusCode: 0 })
+      }
+    },
+    setup({ error }){
+      const state = reactive({
+        pageNotFound: '404 Not Found',
+        otherError: 'An error occurred'
+      })
+
+      const head = error.statusCode === 404 ? state.pageNotFound : state.otherError
+
+      return { ...toRefs(state), head }
     }
-  },
-  data () {
-    return {
-      pageNotFound: '404 Not Found',
-      otherError: 'An error occurred'
-    }
-  },
-  head () {
-    const title =
-      this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-    return {
-      title
-    }
-  }
-}
+})
 </script>
 
 <style scoped>
